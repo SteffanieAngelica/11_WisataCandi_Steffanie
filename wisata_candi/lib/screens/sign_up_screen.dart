@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   SignUpScreen({super.key});
@@ -9,16 +10,53 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  //TODO: 1.Deklarasikan variable
+
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   String _errorText = '';
 
-  bool _isSignIn = false;
+  //bool _isSignIn = false;
 
-  bool _obscurePassword = false;
+  bool _obscurePassword = true;
+
+  //TODO: 1. Membuat Metode _signUp
+  void _signUp() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String name = _nameController.text.trim();
+    final String username = _usernameController.text.trim();
+    final String password = _passwordController.text.trim();
+    
+    if(password.length < 8) {
+      if(!password.contains(RegExp(r'[A-Z]')) || !password.contains(RegExp(r'[a-z]')) || !password.contains(RegExp(r'[0-9]')) || !password.contains(RegExp(r'[!@#\\\$%^&*(),.?":{}|<>]'))) {
+        setState(() {
+          _errorText = "Minimal 8 karakter, kombinasi [A-Z], [a-z], [0-9], [!@#\\\$%^&*(),.?\":{}|<>]";
+        });
+        return;
+      }
+      //simpan data pengguna di SharedPreferences
+      prefs.setString('fullname', name);
+      prefs.setString('username', username);
+      prefs.setString('password', password);
+
+      //buat navigasi ke SignInScreen
+      Navigator.pushReplacementNamed(context, '/signin');
+    }
+    print('*** Sign Up Berhasil!  ');
+    print('Nama: $name');
+    print('Nama Pengguna: $username');
+    print('Password: $password');
+  }
+  //TODO: 2. Membuat fungsi _dispose
+  @override
+  void dispose() {
+    //TODO: implement dispose 
+    super.dispose();
+    _nameController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +82,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: const InputDecoration(
                     labelText: "Nama",
                     border: OutlineInputBorder(),
+                    
                   ),
+                  
                 ),
                 const SizedBox(
                   height: 20,
@@ -76,15 +116,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       icon: Icon(_obscurePassword 
                           ? Icons.visibility_off 
                           : Icons.visibility),
-                    )
+                    ),
+                    
                   ),
+                  obscureText: _obscurePassword,
                 ), 
                 //TODO: 7.Pasang ElevatedButton Sign In
                 const SizedBox(
                   height: 20,
                   ),
                 ElevatedButton(
-                  onPressed: (){}, 
+                  onPressed: (){
+                    _signUp();
+                  }, 
                   child: const Text('Sign Up'),
                 ),
                 //TODO: 8.Pasang TextButton Sign Up

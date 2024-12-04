@@ -10,6 +10,7 @@ import 'screens/profile_screen.dart';
 import 'screens/sign_in_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/sign_up_screen.dart';
 
 void main() {
   runApp(const MainApp());
@@ -43,7 +44,8 @@ class MainApp extends StatelessWidget {
       //SignInScreen(),
       //SearchScreen(),
       //HomeScreen(),
-      MainScreen(),
+      //MainScreen(),
+      SignUpScreen(),
     );
   }
 }
@@ -74,6 +76,12 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ), 
       home: const MainScreen(),
+      initialRoute: '/',
+      routes: {
+        '/homescreen': (context) => const HomeScreen(),
+        '/signin': (context) => SignInScreen(),
+        '/signup' : (context) => SignUpScreen(),
+      },
       //home: const ProfileScreen(),
       //home: DetailScreen(candi: candiList[0]),
       //home: const SignInScreen(),
